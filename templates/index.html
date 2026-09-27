@@ -1,73 +1,207 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Curso Correto do G & LJ</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f4f6f8;
+            color: #111827;
+        }
+
+        .capa {
+            min-height: 330px;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-        }
 
-        header {
-            background: #111827;
+            background:
+                linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+                linear-gradient(135deg, #111827, #2563eb);
+            
             color: white;
-            padding: 45px 20px;
         }
 
-        h1 {
-            margin: 0;
-            font-size: 32px;
+        .capa h1 {
+            font-size: 42px;
+            margin: 0 0 15px;
         }
 
-        p {
-            font-size: 18px;
+        .capa p {
+            font-size: 19px;
+            max-width: 650px;
+            margin: 0 auto 25px;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .botao {
+            display: inline-block;
+            padding: 13px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            background: white;
+            color: #111827;
+        }
+
+        .botao.azul {
+            background: #2563eb;
+            color: white;
         }
 
         .container {
-            padding: 30px 20px;
+            max-width: 1100px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .cursos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
 
         .curso {
             background: white;
-            margin: 15px auto;
-            padding: 20px;
-            max-width: 500px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.10);
+            text-align: left;
         }
 
         .curso h2 {
             margin-top: 0;
         }
+
+        .categoria {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .descricao {
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .ver-curso {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 11px 17px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 30px;
+            padding: 25px;
+            background: #111827;
+            color: white;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .capa h1 {
+                font-size: 30px;
+            }
+
+            .capa {
+                min-height: 300px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <header>
+    <section class="capa">
         <h1>Curso Correto do G & LJ</h1>
-        <p>Aprenda, desenvolva e prepare-se para o seu futuro.</p>
-    </header>
 
-    <div class="container">
-        <div class="curso">
-            <h2>Cursos Técnicos</h2>
-            <p>Encontre conteúdos para diferentes áreas técnicas.</p>
+        <p>
+            Aprenda, desenvolva novas competências e prepare-se
+            para o seu futuro através de cursos técnicos.
+        </p>
+
+        <div class="botoes">
+            <a href="{{ url_for('courses') }}" class="botao azul">
+                Ver todos os cursos
+            </a>
+
+            <a href="{{ url_for('register') }}" class="botao">
+                Criar conta
+            </a>
+
+            <a href="{{ url_for('login') }}" class="botao">
+                Entrar
+            </a>
+        </div>
+    </section>
+
+    <main class="container">
+
+        <h2 class="titulo">Cursos disponíveis</h2>
+
+        <div class="cursos">
+
+            {% for course in courses %}
+
+            <div class="curso">
+
+                <h2>{{ course[0] }}</h2>
+
+                <div class="categoria">
+                    {{ course[1] }}
+                </div>
+
+                <p class="descricao">
+                    {{ course[2] }}
+                </p>
+
+                <a
+                    href="{{ url_for('course_detail', name=course[0]) }}"
+                    class="ver-curso"
+                >
+                    Entrar no curso
+                </a>
+
+            </div>
+
+            {% endfor %}
+
         </div>
 
-        <div class="curso">
-            <h2>Aprendizagem</h2>
-            <p>Estude de forma simples, organizada e acessível.</p>
-        </div>
+    </main>
 
-        <div class="curso">
-            <h2>Em breve</h2>
-            <p>Novos cursos e conteúdos serão adicionados.</p>
-        </div>
-    </div>
+    <footer>
+        <p>© 2026 Curso Correto do G & LJ</p>
+        <p>Aprender hoje para construir o futuro.</p>
+    </footer>
 
 </body>
 </html>
