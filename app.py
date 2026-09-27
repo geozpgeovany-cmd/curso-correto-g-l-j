@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+nfrom flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -115,3 +115,4 @@ def login():
         conn = db()
         user = conn.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
        
+user = conn.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
