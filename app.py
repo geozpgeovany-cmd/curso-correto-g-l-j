@@ -114,5 +114,64 @@ def login():
         password = request.form["password"]
         conn = db()
         user = conn.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
-       
-user = conn.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
+          conn.close()
+
+        if user and check_password_hash(user["password"], password):
+            session["user_id"] = user["id"]
+            session["user_name"] = user["name"]
+            flash("Login efetuado com sucesso.")
+            return redirect(url_for("home"))
+
+        flash("Email ou senha incorretos.")
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("Sessão terminada.")
+    return redirect(url_for("home"))
+
+
+@app.route("/inscrever/<name>", methods=["POST"])
+def enroll(name):
+    if "user_id" not in session:
+        flash("Entra na tua conta para te inscreveres no curso.")
+        return redirect(url_for("login"))
+
+    course = next((c for c in COURSES if c[0] == name), None)
+
+    if not course:
+        return "Curso não encontrado", 404
+
+    conn = db()
+    conn.execute(
+        "INSERT OR IGNORE INTO enrollments(user_id, course) VALUES(?, ?)",
+        (session["user_id"], course[0])
+    )
+    conn.commit()
+    conn.close()
+
+    flash("Inscrição realizada com sucesso!")
+    return redirect(url_for("course_detail", name=name))
+
+
+@app.route("/meus-cursos")
+def my_courses():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = db()
+    enrollments = conn.execute(
+        "SELECT course FROM enrollments WHERE user_id=?",
+        (session["user_id"],)
+    ).fetchall()
+    conn.close()
+
+    return render_template("my_courses.html", enrollments=enrollments)
+
+
+if __name__ == "__main__":
+    init_db()
+    app.run(host="0.0.0.0", port=5000)     
